@@ -3,45 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cool Dynamic Grid</title>
+    <title>XAND is the Way</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(-45deg, #0f0c20, #15103c, #091a3a, #03001e); background-size: 400% 400%; animation: gradientBG 15s ease infinite; overflow-x: hidden; color: #fff; padding: 2rem; }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        /* Grid Layout for containers */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; width: 100%; justify-content: center; }
+        /* Starts as pure high-contrast pitch black */
+        body { 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #000000;
+            overflow: hidden; 
+            color: #fff; 
+            padding: 2rem; 
+            cursor: pointer;
+            position: relative;
+        }
         
-        /* Container styling with entry animation */
-        .container { position: relative; height: 180px; display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.03); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; transform: translateY(30px); animation: fadeInUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        .container:hover { transform: translateY(-10px) scale(1.02); border-color: rgba(0, 198, 255, 0.6); box-shadow: 0 0 25px rgba(0, 198, 255, 0.4), 0 0 50px rgba(114, 4, 255, 0.2); }
-        
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        
-        /* Staggered animation delays */
-        .container:nth-child(1) { animation-delay: 0.5s; }
-        .container:nth-child(2) { animation-delay: 0.75s; }
-        .container:nth-child(3) { animation-delay: 1.0s; }
-        .container:nth-child(4) { animation-delay: 1.25s; }
+        /* Tween from flash light down to dark moody gradient on click */
+        body.boom {
+            animation: lightToDarkTween 2.5s cubic-bezier(0.1, 0.8, 0.1, 1) forwards, gradientBG 20s ease infinite 2.5s;
+        }
 
-        .copy-btn { padding: 12px 30px; font-size: 1rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #7209b7, #3f37c9); border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(114, 9, 183, 0.4); transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
-        .copy-btn:hover { background: linear-gradient(135deg, #3f37c9, #4895ef); box-shadow: 0 6px 20px rgba(72, 149, 239, 0.6); transform: translateY(-2px); }
-        .copy-btn:active { transform: translateY(1px); }
+        @keyframes lightToDarkTween {
+            0% { background: #ffffff; }
+            15% { background: #1a153a; }
+            100% { background: #090714; }
+        }
+        
+        @keyframes gradientBG { 
+            0% { background: #090714; background-position: 0% 50%; } 
+            50% { background: #050f24; background-position: 100% 50%; } 
+            100% { background: #02000a; background-position: 0% 50%; } 
+        }
+        
+        .grid { display: flex; justify-content: center; max-width: 1200px; width: 100%; z-index: 2; }
+        
+        /* Container stays invisible until clicked */
+        .container { 
+            position: relative; 
+            min-height: 220px; 
+            width: 100%; 
+            max-width: 400px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 1.2rem; 
+            background: rgba(255, 255, 255, 0.02); 
+            border-radius: 24px; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5); 
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s, box-shadow 0.4s, opacity 0.8s ease; 
+            opacity: 0; 
+            transform: translateY(50px) scale(0.8); 
+            padding: 1.5rem; 
+            text-align: center; 
+            pointer-events: none; 
+        }
+        .container.reveal { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+            pointer-events: auto; 
+        }
+        .container:hover { 
+            transform: translateY(-8px); 
+            border-color: rgba(0, 198, 255, 0.4); 
+            box-shadow: 0 0 30px rgba(0, 198, 255, 0.15), 0 0 60px rgba(114, 4, 255, 0.1); 
+        }
+        
+        .prompt { 
+            position: absolute; 
+            font-size: 1rem; 
+            letter-spacing: 4px; 
+            color: #888899; 
+            text-transform: uppercase; 
+            transition: opacity 0.3s ease; 
+            font-weight: 400;
+            z-index: 2;
+        }
+
+        /* Fluid expanding ripple rings */
+        .ripple {
+            position: absolute;
+            border: 2px solid rgba(0, 198, 255, 0.4);
+            background: radial-gradient(circle, rgba(114, 9, 183, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            animation: rip 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            z-index: 1;
+        }
+        @keyframes rip {
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .btn { padding: 14px 36px; font-size: 0.95rem; font-weight: 600; color: #fff; background: linear-gradient(135deg, #560bad, #3f37c9); border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 20px rgba(114, 9, 183, 0.3); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); text-transform: uppercase; letter-spacing: 2px; }
+        .btn:hover { background: linear-gradient(135deg, #3f37c9, #4895ef); box-shadow: 0 6px 25px rgba(72, 149, 239, 0.4); transform: translateY(-2px); }
+        .btn:active { transform: translateY(1px); }
+        
+        .header-text { font-size: 1.1rem; font-weight: 400; color: #a0a0c0; letter-spacing: 1px; line-height: 1.6; }
+        .accent-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: #00f2fe; margin-bottom: 0.5rem; opacity: 0.8; }
     </style>
 </head>
-<body>
+<body onclick="initializeAll(event)">
+
+    <div id="start-prompt" class="prompt">CLICK ANYWHERE</div>
+
     <div class="grid">
-        <!-- Container with the one-line copy button inside -->
-        <div class="container">
-          <h1>XAND is the way: Gates that use XOR and XNOR.</h1>
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('15,0,-2,0,1,;15,0,2,0,0,;3,0,0,0,2,;15,0,0,0,0,;13,0,-2,1,1,50;15,0,-2,0,0,;13,0,2,1,0,79;13,0,-2,1,0,49?1,4;1,3;3,2;4,3;6,3;6,4??').then(() => { const original = this.innerText; this.innerText = 'Copied!'; setTimeout(() => this.innerText = original, 1500); })">AND Gate</button>
+        <div id="main-container" class="container">
+            <span class="accent-title">Logic Synthesis</span>
+            <p class="header-text">XAND is the way:<br>Gates out of XOR and XNOR</p>
+            <button class="btn" onclick="event.stopPropagation(); createRipple(event); navigator.clipboard.writeText('15,0,-2,0,1,;15,0,2,0,0,;3,0,0,0,2,;15,0,0,0,0,;13,0,-2,1,1,50;15,0,-2,0,0,;13,0,2,1,0,79;13,0,-2,1,0,49?1,4;1,3;3,2;4,3;6,3;6,4??').then(() => { const original = this.innerText; this.innerText = 'Copied!'; setTimeout(() => this.innerText = original, 1500); })">AND</button>
         </div>
-        
-        <!-- Additional placeholder containers to demonstrate the grid and staggered animation sequence -->
-        <div class="container"></div>
-        <div class="container"></div>
-        <div class="container"></div>
     </div>
+
+    <script>
+        let audioCtx = null;
+        let scriptNode = null;
+        let lowpassFilter = null;
+        let t = 0;
+
+        function createRipple(e) {
+            const rip = document.createElement('div');
+            rip.classList.add('ripple');
+            const size = Math.max(window.innerWidth, window.innerHeight) * 2;
+            rip.style.width = rip.style.height = size + 'px';
+            rip.style.left = e.clientX + 'px';
+            rip.style.top = e.clientY + 'px';
+            document.body.appendChild(rip);
+            setTimeout(() => rip.remove(), 1200);
+        }
+
+        function playPopSound(ctx) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.13);
+        }
+
+        function initializeAll(e) {
+            if (audioCtx) {
+                createRipple(e);
+                return;
+            }
+
+            // Trigger visual ripple + light-to-dark backdrop animation instantly when clicked
+            createRipple(e);
+            document.body.classList.add('boom');
+
+            // Fade instruction prompt away
+            document.getElementById('start-prompt').style.opacity = '0';
+            setTimeout(() => document.getElementById('start-prompt').remove(), 300);
+
+            // Pop layout element seamlessly into view
+            setTimeout(() => {
+                document.getElementById('main-container').classList.add('reveal');
+            }, 600);
+
+            // Activate synthesized low-pass environment
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 8000 });
+            playPopSound(audioCtx);
+
+            lowpassFilter = audioCtx.createBiquadFilter();
+            lowpassFilter.type = 'lowpass';
+            lowpassFilter.frequency.setValueAtTime(650, audioCtx.currentTime); 
+            lowpassFilter.Q.setValueAtTime(0.8, audioCtx.currentTime);
+
+            const bufferSize = 4096;
+            scriptNode = audioCtx.createScriptProcessor(bufferSize, 0, 1);
+            
+            scriptNode.onaudioprocess = function(audioProcessingEvent) {
+                const outputBuffer = audioProcessingEvent.outputBuffer;
+                const channelData = outputBuffer.getChannelData(0);
+                
+                for (let sample = 0; sample < outputBuffer.length; sample++) {
+                    let val = (t * (t >> 11 & t >> 8) & (t >> 4 | t >> 9)) | (t * (t >> 14 & t >> 9) & 127);
+                    let normalizedValue = ((val & 255) / 127.5) - 1.0;
+                    channelData[sample] = normalizedValue * 0.035; 
+                    t++;
+                }
+            };
+
+            scriptNode.connect(lowpassFilter);
+            lowpassFilter.connect(audioCtx.destination);
+        }
+    </script>
 </body>
-  </html>
-  
+</html>
